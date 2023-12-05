@@ -25,6 +25,8 @@ func main() {
     router := gin.Default()
     router.GET("/albums", getAlbums)
     router.GET("/albums/:id", getAlbumByID)
+	router.GET("/albums/title/:title", getAlbumByTitle)
+	router.GET("/albums/artist/:artist", getAlbumByArtist)
     router.POST("/albums", postAlbums)
 
     router.Run("localhost:8080")
@@ -65,3 +67,32 @@ func getAlbumByID(c *gin.Context) {
     }
     c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
 }
+
+// getAlbumByArtist locates the album whose Artist Name value matches the artist
+// parameter sent by the client, then returns that album as a response.
+func getAlbumByArtist(c *gin.Context) {
+    artist := c.Param("artist")
+
+    // Loop over the list of albums, looking for
+    for _, a := range albums {
+        if a.Artist == artist {
+            c.IndentedJSON(http.StatusOK, a)
+            return
+        }
+    }
+    c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+// get albums by title name
+func getAlbumByTitle(c *gin.Context) {
+	title := c.Param("title")
+
+	// Loop over the list of albums, looking for
+	for _, a := range albums {
+		if a.Title == title {
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+
